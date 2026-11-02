@@ -202,3 +202,38 @@ footer .copy { color: var(--grey); font-size: 9px; }
 .admin .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .admin .list li { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 11px; }
 @media (max-width: 560px) { .admin .grid2 { grid-template-columns: 1fr; } }
+
+/* ---------- motion (subtle; off for reduced-motion) ---------- */
+@keyframes viewIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes rowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+@keyframes ringPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(163,22,27,.35); } 60% { box-shadow: 0 0 0 7px rgba(163,22,27,0); } }
+@keyframes flicker { 0%, 90%, 100% { opacity: .85; } 92% { opacity: .3; } 93% { opacity: .85; } 96% { opacity: .5; } }
+@keyframes scan { to { background-position: 0 240px; } }
+@keyframes playerIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes beat { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.12); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .view { animation: viewIn .55s cubic-bezier(.2,.7,.2,1) both; }
+  .index > * { animation: rowIn .5s cubic-bezier(.2,.7,.2,1) both; }
+  .index > :nth-child(1) { animation-delay: 70ms; }
+  .index > :nth-child(2) { animation-delay: 140ms; }
+  .index > :nth-child(3) { animation-delay: 210ms; }
+  .index > :nth-child(4) { animation-delay: 280ms; }
+  .index > :nth-child(5) { animation-delay: 350ms; }
+  .index > :nth-child(6) { animation-delay: 420ms; }
+  .index > :nth-child(7) { animation-delay: 490ms; }
+  .index > :nth-child(8) { animation-delay: 560ms; }
+  .ring.full { animation: ringPulse 2.6s ease-out infinite; border-radius: 50%; }
+  .mirror { animation: flicker 6s steps(1) infinite; }
+  .tab { transition: translate .25s ease, background-color .2s; }
+  .tab:hover { translate: -3px 0; }
+  .row .lbl, .row a, .t { transition: color .2s; }
+  .player:not([hidden]) { animation: playerIn .45s cubic-bezier(.2,.7,.2,1) both; }
+  .likebtn { transition: filter .2s; }
+  .likebtn[aria-pressed="true"] { animation: beat .5s ease; }
+  .exhibit::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 4; opacity: .07;
+    background: repeating-linear-gradient(0deg, #000 0 1px, transparent 1px 4px);
+    animation: scan 9s linear infinite;
+  }
+}
