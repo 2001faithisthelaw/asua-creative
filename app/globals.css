@@ -237,3 +237,9 @@ footer .copy { color: var(--grey); font-size: 9px; }
     animation: scan 9s linear infinite;
   }
 }
+
+/* ---------- site cursor (pixel star arrow) ---------- */
+@media (pointer: fine) {
+  html, body, *, a, button { cursor: url("/icons/cursor.png") 0 14, auto; }
+  input, textarea, select { cursor: text; }
+}
