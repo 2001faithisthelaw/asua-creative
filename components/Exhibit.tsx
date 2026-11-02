@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { HOME_BG, getRelease } from "@/data/releases";
+import { HOME_BG } from "@/data/releases";
+import { useCatalog } from "./Catalog";
 
 /* ---- barcode (deterministic, same as referencia.html) ---- */
 const BARCODE: { x: number; w: number }[] = (() => {
@@ -37,7 +38,9 @@ const SCATTER = (() => {
 export default function Exhibit() {
   const pathname = usePathname();
   const m = pathname.match(/^\/release\/([^/]+)/);
-  const rel = m ? getRelease(decodeURIComponent(m[1])) : undefined;
+  const catalog = useCatalog();
+  const slug = m ? decodeURIComponent(m[1]).toLowerCase() : "";
+  const rel = slug ? catalog.find((r) => r.key === slug) : undefined;
   const target = rel ? rel.cover : HOME_BG;
   const serial = rel ? rel.serial : "2001";
 

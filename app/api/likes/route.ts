@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { Redis } from "@upstash/redis";
 import { NextResponse, type NextRequest } from "next/server";
-import { TRACK_IDS } from "@/data/releases";
+import { getReleases, trackIds } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -13,14 +13,15 @@ function db() {
 
 const key = (trackId: string) => `likes:${trackId}`;
 
-function badTrack(trackId: string | null): trackId is null {
-  return !trackId || !TRACK_IDS.has(trackId);
+/* Only tracks that exist in the live catalog can be liked. */
+async function inCatalog(trackId: string): Promise<boolean> {
+  return trackIds(await getReleases()).has(trackId);
 }
 
 /* GET /api/likes?trackId=… → { count, liked } (public) */
 export async function GET(req: NextRequest) {
   const trackId = req.nextUrl.searchParams.get("trackId");
-  if (badTrack(trackId)) return NextResponse.json({ error: "trackId inválido" }, { status: 400 });
+  if (!trackId || !(await inCatalog(trackId))) return NextResponse.json({ error: "trackId inválido" }, { status: 400 });
   const { userId } = await auth();
   const [count, liked] = await Promise.all([
     db().scard(key(trackId)),
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   const body = (await req.json().catch(() => null)) as { trackId?: unknown } | null;
   const trackId = typeof body?.trackId === "string" ? body.trackId : null;
-  if (badTrack(trackId)) return NextResponse.json({ error: "trackId inválido" }, { status: 400 });
+  if (!trackId || !(await inCatalog(trackId))) return NextResponse.json({ error: "trackId inválido" }, { status: 400 });
   const k = key(trackId);
   const removed = await db().srem(k, userId);
   if (!removed) await db().sadd(k, userId);

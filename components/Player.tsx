@@ -5,7 +5,8 @@ import {
   createContext, useCallback, useContext, useEffect, useRef, useState,
   type CSSProperties, type ReactNode,
 } from "react";
-import { RELEASES, type Release } from "@/data/releases";
+import type { Release } from "@/data/releases";
+import { useCatalog } from "./Catalog";
 import { useStatus } from "./Status";
 
 type OpenPlayer = (key: string, i: number, autoplay: boolean) => void;
@@ -25,6 +26,7 @@ function fmt(s: number) {
 /* Chrome Y2K player: skin + hotspots, coordinates in % of the 736×728 skin. */
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const setS = useStatus();
+  const catalog = useCatalog();
   const { isSignedIn } = useAuth();
   const clerk = useClerk();
 
@@ -114,12 +116,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, [drawBars]);
 
   const openPlayer = useCallback<OpenPlayer>((key, i, autoplay) => {
-    const r = RELEASES[key];
+    const r = catalog.find((x) => x.key === key);
     if (!r) return;
     setHidden(false);
     load(r, i);
     if (autoplay) play();
-  }, [load, play]);
+  }, [catalog, load, play]);
 
   /* ---- volume: vertical slider + dial, kept in sync ---- */
   const setVol = useCallback((v: number) => {

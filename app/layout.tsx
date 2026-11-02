@@ -1,9 +1,13 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import Exhibit from "@/components/Exhibit";
+import { CatalogProvider } from "@/components/Catalog";
 import { PlayerProvider } from "@/components/Player";
 import { StatusProvider } from "@/components/Status";
+import { getReleases } from "@/lib/catalog";
 import "./globals.css";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "ASUA CREATIVE",
@@ -15,7 +19,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const releases = await getReleases();
   return (
     <html lang="es">
       <head>
@@ -25,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ClerkProvider>
+          <CatalogProvider releases={releases}>
           <StatusProvider>
             <PlayerProvider>
               <div className="wrap">
@@ -37,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </PlayerProvider>
           </StatusProvider>
+          </CatalogProvider>
         </ClerkProvider>
       </body>
     </html>
