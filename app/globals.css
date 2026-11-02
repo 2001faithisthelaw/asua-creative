@@ -6,6 +6,7 @@
 @source not inline("ring");
 
 @font-face { font-family: "Chemian"; src: url("/fonts/chemian.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Brentonscrawl"; src: url("/fonts/brentonscrawl.ttf") format("truetype"); font-display: swap; }
 /* Layout: 1998 studio index at a fixed 640px measure over a scanned p2-style page background — dithered "exhibit" collage up top (label banner on the index, the release cover on a release page), staggered list with ring markers and vertical tabs, bevelled status bar, chrome Y2K player skin for tracks. Palette pulled from the label banner. Single light look by choice. */
 :root {
   --bg: #d7dcd6;
@@ -23,6 +24,7 @@
   --sans: Arial, Helvetica, sans-serif;
   --title: "Chemian", "Courier New", monospace;
   --type: "Special Elite", "Courier New", monospace;
+  --player: "Brentonscrawl", Arial, Helvetica, sans-serif;
   color-scheme: light;
 }
 * { box-sizing: border-box; }
@@ -125,11 +127,11 @@ footer .copy { color: var(--grey); font-size: 9px; }
 .hs:hover { box-shadow: 0 0 0 2px rgba(63,224,208,.6); }
 .hs:focus-visible { outline: 1px dotted #fff; outline-offset: 1px; }
 .hs[hidden] { display: none; }
-.p-screen { position: absolute; left: 23.8%; top: 22.4%; width: 51.8%; height: 35.3%; background: #000; overflow: hidden; color: var(--sage); font: 400 10px/1.25 var(--sans); padding: 6px; display: grid; grid-template-columns: 34% 1fr; grid-template-rows: auto 1fr auto; gap: 4px 7px; }
+.p-screen { position: absolute; left: 23.8%; top: 22.4%; width: 51.8%; height: 35.3%; background: #000; overflow: hidden; color: var(--sage); font: 400 10px/1.25 var(--player); padding: 6px; display: grid; grid-template-columns: 34% 1fr; grid-template-rows: auto 1fr auto; gap: 4px 7px; }
 .p-screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.32) 0 1px, transparent 1px 3px); pointer-events: none; }
 .p-cover { width: 100%; aspect-ratio: 1; image-rendering: pixelated; display: block; grid-row: 1 / 3; }
 .p-info { min-width: 0; display: grid; align-content: start; gap: 2px; }
-.p-title { color: var(--cyan); font: 400 13px/1 var(--title); text-transform: lowercase; white-space: nowrap; overflow: hidden; }
+.p-title { color: var(--cyan); font: 400 13px/1 var(--player); text-transform: lowercase; white-space: nowrap; overflow: hidden; }
 .p-title span { display: inline-block; }
 .p-title.scroll span { padding-left: 100%; }
 @media (prefers-reduced-motion: no-preference) { .p-title.scroll span { animation: marquee 8s linear infinite; } }

@@ -56,7 +56,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     for (let i = 0; i < n; i++) {
       const v = data ? data[i] / 255 : 0.03, h = Math.max(4, v * viz.height);
       for (let y = viz.height - 6; y > viz.height - h; y -= 8) {
-        vx.fillStyle = y < viz.height * 0.3 ? "#d0262c" : y < viz.height * 0.6 ? "#3fe0d0" : "#79877a";
+        vx.fillStyle = y < viz.height * 0.3 ? "#c6ff3d" : y < viz.height * 0.6 ? "#8ee000" : "#5fa800";
         vx.fillRect(i * w + 2, y, w - 4, 5);
       }
     }
@@ -184,6 +184,21 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const multi = !!rel && rel.tracks.length > 1;
   const tr = rel ? rel.tracks[idx] : null;
   const title = tr ? (multi ? pad2(idx + 1) + " " : "") + tr.title : "";
+
+  /* marquee only when the title does not fit the screen */
+  const titleBox = useRef<HTMLDivElement>(null);
+  const [scroll, setScroll] = useState(false);
+  useEffect(() => {
+    const box = titleBox.current;
+    if (!box || hidden) return;
+    const measure = () => {
+      const span = box.firstElementChild as HTMLElement;
+      const text = span.offsetWidth - parseFloat(getComputedStyle(span).paddingLeft || "0");
+      setScroll(text > box.clientWidth);
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+  }, [title, hidden]);
   const likeHint = !isSignedIn ? "iniciá sesión para dar me gusta" : likes.liked ? "quitar me gusta" : "me gusta";
 
   return (
@@ -194,7 +209,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         <div className="p-screen">
           <img className="p-cover" id="p-cover" alt="" src={rel?.cover || undefined} />
           <div className="p-info">
-            <div className={"p-title" + (tr && tr.title.length > 12 ? " scroll" : "")} id="p-titlebox"><span id="p-title">{title}</span></div>
+            <div className={"p-title" + (scroll ? " scroll" : "")} id="p-titlebox" ref={titleBox}><span id="p-title">{title}</span></div>
             <div className="p-sub" id="p-artist">{rel?.artist}</div>
             <div className="p-sub" id="p-prod">{rel ? "prod. " + rel.prod : ""}</div>
             <div className="p-time" id="p-time">{time}</div>
