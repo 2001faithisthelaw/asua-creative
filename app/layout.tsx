@@ -1,7 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
+import Exhibit from "@/components/Exhibit";
 import { PlayerProvider } from "@/components/Player";
-import Sidebar from "@/components/Sidebar";
 import { StatusProvider } from "@/components/Status";
 import "./globals.css";
 
@@ -28,14 +28,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <StatusProvider>
             <PlayerProvider>
               <div className="wrap">
-                <Sidebar />
-                <main className="main">
-                  {children}
-                  <footer>
-                    <a href="https://soundcloud.com/asua-colective" target="_blank" rel="noopener" data-s="soundcloud">soundcloud.com/asua-colective</a>
-                    <span className="copy">©2026 ASUA CREATIVE. Las obras pertenecen a sus autores.</span>
-                  </footer>
-                </main>
+                <Exhibit />
+                {children}
+                <footer>
+                  <a href="https://soundcloud.com/asua-colective" target="_blank" rel="noopener" data-s="soundcloud">soundcloud.com/asua-colective</a>
+                  <span className="copy">©2026 ASUA CREATIVE. Las obras pertenecen a sus autores.</span>
+                </footer>
               </div>
             </PlayerProvider>
           </StatusProvider>
