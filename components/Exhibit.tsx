@@ -6,20 +6,6 @@ import { useEffect, useState } from "react";
 import { HOME_BG } from "@/data/releases";
 import { useCatalog } from "./Catalog";
 
-/* ---- barcode (deterministic, same as referencia.html) ---- */
-const BARCODE: { x: number; w: number }[] = (() => {
-  const s = "ASUA2001JOAUNTITLED08", out: { x: number; w: number }[] = [];
-  let x = 0;
-  for (let i = 0; i < s.length; i++) {
-    const ch = s.charCodeAt(i);
-    for (let k = 0; k < 4; k++) {
-      const w = 1 + ((ch >> k) & 1) * 2 + ((ch >> (k + 3)) & 1);
-      if (k % 2 === 0) out.push({ x, w });
-      x += w;
-    }
-  }
-  return out;
-})();
 
 /* ---- scattered fragments (seeded) ---- */
 const SCATTER = (() => {
@@ -68,30 +54,25 @@ export default function Exhibit() {
         <rect width="640" height="340" filter="url(#grain)" />
         <rect x="140" y="60" width="18" height="250" fill="none" stroke="#031819" strokeOpacity=".2" strokeWidth="4" />
         <path d="M149 100 v12 m-4 -4 l4 4 l4 -4 M149 280 v12 m-4 -4 l4 4 l4 -4" stroke="#031819" strokeOpacity=".3" fill="none" />
-        <g fill="none" stroke="#031819" strokeWidth=".8">
-          <path d="M86 150 h44 v44 h-44 z M100 138 h44 v44 h-44 z M86 150 l14 -12 M130 150 l14 -12 M130 194 l14 -12" />
-          <path d="M86 194 l14 -12" strokeDasharray="3 2" />
-        </g>
-        <text x="102" y="176" fontFamily="Arial, sans-serif" fontSize="8" fontWeight="700" fill="#031819">0.1</text>
+        <image href="/icons/diamond.png" x="80" y="112" width="80" height="80" opacity=".55" />
         <g fill="none" stroke="#031819" strokeWidth=".6" strokeOpacity=".7">
           <path d="M350 226 l54 -30 h140 l-54 30 z" />
           <path d="M350 258 l54 -30 h140 l-54 30 z" strokeOpacity=".4" />
           <path d="M350 290 l54 -30 h140 l-54 30 z" strokeOpacity=".25" />
           <path d="M236 206 h140" />
         </g>
-        <rect x="256" y="256" width="184" height="46" fill="#fff" />
-        <g id="barcode" fill="#031819" transform="translate(262 262)">
-          {BARCODE.map((r, i) => <rect key={i} x={r.x} y={0} width={r.w} height={34} />)}
-        </g>
         <g fill="none" stroke="#031819" strokeWidth="1.2">
           <path d="M430 330 v-56 h38 v44 h7 v12 z" />
           <path d="M430 302 h8 m22 0 h8" />
         </g>
-        <g fill="#031819" opacity=".75" id="scatter">
-          {SCATTER.map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} transform={r.t} />)}
+        <defs>
+          <symbol id="mini-star" viewBox="-5 -5 10 10"><path d="M0 -5 L1.1 -1.1 L5 0 L1.1 1.1 L0 5 L-1.1 1.1 L-5 0 L-1.1 -1.1 Z" /></symbol>
+        </defs>
+        <g fill="#031819" opacity=".4" id="scatter">
+          {SCATTER.map((r, i) => <use key={i} href="#mini-star" x={Number(r.x) - 3} y={Number(r.y) - 3} width={Number(r.w) + 2} height={Number(r.w) + 2} transform={r.t} />)}
         </g>
       </svg>
-      <Link className="logo" href="/" aria-label="ASUA CREATIVE, inicio"><img src="/images/logo.gif" alt="" width={124} height={124} /></Link>
+      <Link className="logo" href="/" aria-label="ASUA CREATIVE, inicio"><img src="/images/logo-red.png" alt="" width={124} height={124} /></Link>
       <div className="mark"><b>asua</b><span className="legend"><i>R</i><span>Release</span><i>MX</i><span>Mix</span><i>A</i><span>Artist</span></span></div>
       <div className="date">11.26</div>
       <div className="mirror">***-AUTHENTIC SOUL UNIQUE ART-***</div>

@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import Exhibit from "@/components/Exhibit";
 import { CatalogProvider } from "@/components/Catalog";
+import ClickBurst from "@/components/ClickBurst";
 import { PlayerProvider } from "@/components/Player";
 import { StatusProvider } from "@/components/Status";
 import { getReleases } from "@/lib/catalog";
@@ -30,6 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <ClerkProvider>
+          <ClickBurst />
           <CatalogProvider releases={releases}>
           <StatusProvider>
             <PlayerProvider>

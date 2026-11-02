@@ -32,8 +32,8 @@
 body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: url("/images/banner98.gif") center / cover no-repeat;
-  filter: grayscale(1) contrast(1.15);
-  opacity: .12; mix-blend-mode: multiply;
+  filter: grayscale(.85) contrast(.95) brightness(1.18) blur(2px);
+  opacity: .1; mix-blend-mode: multiply;
 }
 body {
   background: var(--bg) url("/images/pagebg.jpg") no-repeat 0 0; color: var(--fg);
@@ -243,3 +243,8 @@ footer .copy { color: var(--grey); font-size: 9px; }
   html, body, *, a, button { cursor: url("/icons/cursor.png") 0 14, auto; }
   input, textarea, select { cursor: text; }
 }
+
+/* click feedback: the cursor star pops where you click */
+.click-burst { position: fixed; width: 22px; height: 22px; margin: -11px 0 0 -11px; pointer-events: none; z-index: 60; image-rendering: pixelated; animation: burst .5s ease-out forwards; }
+@keyframes burst { from { opacity: .9; transform: scale(.5) rotate(0deg); } to { opacity: 0; transform: scale(1.8) rotate(90deg); } }
+@media (prefers-reduced-motion: reduce) { .click-burst { display: none; } }
