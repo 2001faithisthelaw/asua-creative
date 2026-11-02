@@ -28,6 +28,13 @@
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+/* banner98 washed over the whole page: fixed, grayscale, faint, so it sits behind everything */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url("/images/banner98.gif") center / cover no-repeat;
+  filter: grayscale(1) contrast(1.15);
+  opacity: .12; mix-blend-mode: multiply;
+}
 body {
   background: var(--bg) url("/images/pagebg.jpg") no-repeat 0 0; color: var(--fg);
   font: 400 11px/1.3 var(--sans);
