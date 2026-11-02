@@ -42,7 +42,6 @@ export default function Exhibit() {
   const slug = m ? decodeURIComponent(m[1]).toLowerCase() : "";
   const rel = slug ? catalog.find((r) => r.key === slug) : undefined;
   const target = rel ? rel.cover : HOME_BG;
-  const serial = rel ? rel.serial : "2001";
 
   /* stage crossfade between two layers */
   const [st, setSt] = useState({ a: HOME_BG, b: "", front: "a" as "a" | "b", current: HOME_BG });
@@ -95,7 +94,6 @@ export default function Exhibit() {
       <Link className="logo" href="/" aria-label="ASUA CREATIVE, inicio"><img src="/images/logo.gif" alt="" width={124} height={124} /></Link>
       <div className="mark"><b>asua</b><span className="legend"><i>R</i><span>Release</span><i>MX</i><span>Mix</span><i>A</i><span>Artist</span></span></div>
       <div className="date">11.26</div>
-      <div className="serial" id="serial">{serial}</div>
       <div className="mirror">***-AUTHENTIC SOUL UNIQUE ART-***</div>
     </div>
   );
