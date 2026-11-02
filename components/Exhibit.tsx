@@ -20,20 +20,6 @@ const BARCODE: { x: number; w: number }[] = (() => {
   return out;
 })();
 
-/* ---- scattered fragments (seeded) ---- */
-const SCATTER = (() => {
-  let seed = 11;
-  const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
-  const out: { x: string; y: string; w: string; h: string; t: string }[] = [];
-  for (let n = 0; n < 40; n++) {
-    const y = 10 + rnd() * 260, xx = 180 + rnd() * 60 + y * 0.12;
-    const w = (2 + rnd() * 4).toFixed(1), h = (2 + rnd() * 3).toFixed(1);
-    const t = `rotate(${(rnd() * 80 - 40).toFixed(0)} ${xx.toFixed(1)} ${y.toFixed(1)})`;
-    out.push({ x: xx.toFixed(1), y: y.toFixed(1), w, h, t });
-  }
-  return out;
-})();
-
 export default function Exhibit() {
   const pathname = usePathname();
   const m = pathname.match(/^\/release\/([^/]+)/);
@@ -58,35 +44,26 @@ export default function Exhibit() {
     <div className="exhibit" aria-label="ASUA CREATIVE">
       <div className={"photo" + (st.front === "a" ? "" : " off")} id="ph-a" style={bg(st.a)} />
       <div className={"photo" + (st.front === "b" ? "" : " off")} id="ph-b" style={bg(st.b)} />
+      <div className="veil" />
       <div className="wash" />
       <svg className="layer" viewBox="0 0 640 340" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves={2} seed={7} /><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .14 0" /></filter>
         </defs>
-        <rect width="640" height="340" filter="url(#grain)" />
-        <rect x="140" y="60" width="18" height="250" fill="none" stroke="#031819" strokeOpacity=".2" strokeWidth="4" />
-        <path d="M149 100 v12 m-4 -4 l4 4 l4 -4 M149 280 v12 m-4 -4 l4 4 l4 -4" stroke="#031819" strokeOpacity=".3" fill="none" />
-        <g fill="none" stroke="#031819" strokeWidth=".8">
-          <path d="M86 150 h44 v44 h-44 z M100 138 h44 v44 h-44 z M86 150 l14 -12 M130 150 l14 -12 M130 194 l14 -12" />
-          <path d="M86 194 l14 -12" strokeDasharray="3 2" />
+        <rect width="640" height="340" filter="url(#grain)" opacity=".5" />
+        <g fill="none" stroke="#999" strokeWidth=".5" vectorEffect="non-scaling-stroke">
+          <rect x="140" y="60" width="18" height="250" vectorEffect="non-scaling-stroke" />
+          <path d="M149 100 v12 m-4 -4 l4 4 l4 -4 M149 280 v12 m-4 -4 l4 4 l4 -4" vectorEffect="non-scaling-stroke" />
+          <path d="M86 150 h44 v44 h-44 z M100 138 h44 v44 h-44 z M86 150 l14 -12 M130 150 l14 -12 M130 194 l14 -12" vectorEffect="non-scaling-stroke" />
+          <path d="M86 194 l14 -12" strokeDasharray="3 2" vectorEffect="non-scaling-stroke" />
         </g>
-        <text x="102" y="176" fontFamily="Arial, sans-serif" fontSize="8" fontWeight="700" fill="#031819">0.1</text>
-        <g fill="none" stroke="#031819" strokeWidth=".6" strokeOpacity=".7">
-          <path d="M350 226 l54 -30 h140 l-54 30 z" />
-          <path d="M350 258 l54 -30 h140 l-54 30 z" strokeOpacity=".4" />
-          <path d="M350 290 l54 -30 h140 l-54 30 z" strokeOpacity=".25" />
-          <path d="M236 206 h140" />
-        </g>
-        <rect x="256" y="256" width="184" height="46" fill="#fff" />
-        <g id="barcode" fill="#031819" transform="translate(262 262)">
+        <text x="102" y="176" fontFamily="Georgia, 'Times New Roman', serif" fontStyle="italic" fontSize="8" fill="#666">0.1</text>
+        <g id="barcode" fill="#333" transform="translate(300 270) scale(.6)">
           {BARCODE.map((r, i) => <rect key={i} x={r.x} y={0} width={r.w} height={34} />)}
         </g>
-        <g fill="none" stroke="#031819" strokeWidth="1.2">
-          <path d="M430 330 v-56 h38 v44 h7 v12 z" />
-          <path d="M430 302 h8 m22 0 h8" />
-        </g>
-        <g fill="#031819" opacity=".75" id="scatter">
-          {SCATTER.map((r, i) => <rect key={i} x={r.x} y={r.y} width={r.w} height={r.h} transform={r.t} />)}
+        <g fill="none" stroke="#999" strokeWidth=".5">
+          <path d="M430 330 v-56 h38 v44 h7 v12 z" vectorEffect="non-scaling-stroke" />
+          <path d="M430 302 h8 m22 0 h8" vectorEffect="non-scaling-stroke" />
         </g>
       </svg>
       <Link className="logo" href="/" aria-label="ASUA CREATIVE, inicio"><img src="/images/logo.gif" alt="" width={124} height={124} /></Link>

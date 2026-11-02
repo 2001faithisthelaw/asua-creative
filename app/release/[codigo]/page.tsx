@@ -22,8 +22,8 @@ export default async function ReleasePage({ params }: { params: Promise<{ codigo
             <PlayButton className="t" release={key} hint="reproducir">{rel.title + " "}<span className="code">(R)</span></PlayButton>
             <span id="r-artist">{rel.artist}</span>
             <dl>
-              <dt>cat.</dt><dd id="r-code">{rel.code}</dd>
-              <dt>prod.</dt><dd id="r-prod">{rel.prod}</dd>
+              <dt>cat.</dt><dd id="r-code" className="serif">{rel.code}</dd>
+              <dt className="serif">prod.</dt><dd id="r-prod">{rel.prod}</dd>
               <dt>tipo</dt><dd id="r-type">{rel.type}</dd>
             </dl>
             <ol className="tracks" id="r-tracks">

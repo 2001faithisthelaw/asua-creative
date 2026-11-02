@@ -13,8 +13,8 @@ export default function Home() {
           <Link className="thumb" href="/release/asua0001" data-s="ver release"><img src="/images/asua0001_98.gif" alt="Portada de untitled-08" width={240} height={240} /></Link>
           <div className="info">
             <PlayButton className="t" release="asua0001" hint="reproducir untitled-08">untitled-08 <span className="code">(R)</span></PlayButton>
-            <span>ASUA0001{"  "}Joa</span>
-            <span>prod. Zabtag</span>
+            <span><i className="serif">ASUA0001</i>{"  "}Joa</span>
+            <span><i className="serif">prod.</i> Zabtag</span>
             <span className="sub">Disponible en:</span>
             <a href="https://soundcloud.com/asua-colective/asf-untitled-08joa-prod-zab" target="_blank" rel="noopener" data-s="abrir en SoundCloud">SoundCloud &gt;</a>
           </div>
