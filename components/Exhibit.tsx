@@ -73,7 +73,7 @@ export default function Exhibit() {
         </g>
       </svg>
       <Link className="logo" href="/" aria-label="ASUA CREATIVE, inicio"><img src="/images/logo-red.png" alt="" width={124} height={124} /></Link>
-      <div className="mark"><b>asua</b><span className="legend"><i>R</i><span>Release</span><i>MX</i><span>Mix</span><i>A</i><span>Artist</span></span></div>
+      <div className="mark"><img className="title-img" src="/icons/asua-gothic.png" alt="asua" /><span className="legend"><i>R</i><span>Release</span><i>MX</i><span>Mix</span><i>A</i><span>Artist</span></span></div>
       <div className="date">11.26</div>
       <div className="mirror">***-AUTHENTIC SOUL UNIQUE ART-***</div>
     </div>
