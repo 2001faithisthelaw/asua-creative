@@ -1,17 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PlayButton from "@/components/PlayButton";
-import { RELEASES, getRelease } from "@/data/releases";
+import { getRelease } from "@/lib/catalog";
 
-export function generateStaticParams() {
-  return Object.keys(RELEASES).map((codigo) => ({ codigo }));
-}
+export const dynamic = "force-dynamic";
 
 export default async function ReleasePage({ params }: { params: Promise<{ codigo: string }> }) {
   const { codigo } = await params;
-  const rel = getRelease(codigo);
+  const rel = await getRelease(codigo);
   if (!rel) notFound();
-  const key = codigo.toLowerCase();
+  const key = rel.key;
 
   return (
     <section className="view" id="v-release">

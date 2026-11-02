@@ -5,7 +5,8 @@ import {
   createContext, useCallback, useContext, useEffect, useRef, useState,
   type CSSProperties, type ReactNode,
 } from "react";
-import { RELEASES, type Release } from "@/data/releases";
+import type { Release } from "@/data/releases";
+import { useCatalog } from "./Catalog";
 import { useStatus } from "./Status";
 
 type OpenPlayer = (key: string, i: number, autoplay: boolean) => void;
@@ -25,6 +26,7 @@ function fmt(s: number) {
 /* Chrome Y2K player: skin + hotspots, coordinates in % of the 736×728 skin. */
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const setS = useStatus();
+  const catalog = useCatalog();
   const { isSignedIn } = useAuth();
   const clerk = useClerk();
 
@@ -114,12 +116,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, [drawBars]);
 
   const openPlayer = useCallback<OpenPlayer>((key, i, autoplay) => {
-    const r = RELEASES[key];
+    const r = catalog.find((x) => x.key === key);
     if (!r) return;
     setHidden(false);
     load(r, i);
     if (autoplay) play();
-  }, [load, play]);
+  }, [catalog, load, play]);
 
   /* ---- volume: vertical slider + dial, kept in sync ---- */
   const setVol = useCallback((v: number) => {
@@ -255,7 +257,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         <button className="hs" id="b-next" hidden={!multi} style={{ left: "55%", top: "71.6%", width: "3.6%", height: "5%" }} aria-label="Track siguiente" data-s="siguiente"
           onClick={() => { if (rel && idx < rel.tracks.length - 1) { load(rel, idx + 1); play(); } }} />
         <button className="likebtn" id="b-like" aria-pressed={likes.liked ? "true" : "false"} aria-label="Me gusta" data-s={likeHint} disabled={saving} onClick={onLike}>
-          <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /></svg>
+          <img src="/icons/like-star.png" alt="" width={96} height={96} />
         </button>
         <div
           className="dial" id="dial" ref={dialRef} role="slider" tabIndex={0} aria-label="Volumen" aria-valuemin={0} aria-valuemax={100} aria-valuenow={vol}

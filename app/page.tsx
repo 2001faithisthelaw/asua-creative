@@ -1,22 +1,27 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import PlayButton from "@/components/PlayButton";
+import { getReleases } from "@/lib/catalog";
+
+export const dynamic = "force-dynamic";
 
 const at = (i: number | null, row: string): CSSProperties =>
   (i === null ? { gridRow: row } : { "--i": i, gridRow: row }) as CSSProperties;
 
-export default function Home() {
+/* The feature block and the news line show the newest release. */
+export default async function Home() {
+  const [latest] = await getReleases();
   return (
     <section className="view" id="v-home">
       <div className="index">
         <div className="feature" style={at(22, "1")}>
-          <Link className="thumb" href="/release/asua0001" data-s="ver release"><img src="/images/asua0001_98.gif" alt="Portada de untitled-08" width={240} height={240} /></Link>
+          <Link className="thumb" href={`/release/${latest.key}`} data-s="ver release"><img src={latest.cover} alt={"Portada de " + latest.title} width={240} height={240} /></Link>
           <div className="info">
-            <PlayButton className="t" release="asua0001" hint="reproducir untitled-08">untitled-08 <span className="code">(R)</span></PlayButton>
-            <span>ASUA0001{"  "}Joa</span>
-            <span>prod. Zabtag</span>
+            <PlayButton className="t" release={latest.key} hint={"reproducir " + latest.title}>{latest.title} <span className="code">(R)</span></PlayButton>
+            <span>{latest.code}{"  "}{latest.artist}</span>
+            <span>prod. {latest.prod}</span>
             <span className="sub">Disponible en:</span>
-            <a href="https://soundcloud.com/asua-colective/asf-untitled-08joa-prod-zab" target="_blank" rel="noopener" data-s="abrir en SoundCloud">SoundCloud &gt;</a>
+            <a href={latest.url} target="_blank" rel="noopener" data-s="abrir en SoundCloud">SoundCloud &gt;</a>
           </div>
         </div>
         <Link className="tab" href="/" style={at(null, "1")} data-s="todos los releases"><span>Releases</span></Link>
@@ -28,7 +33,7 @@ export default function Home() {
         <div className="row" style={at(25, "4")}><span className="ring" /><span className="lbl muted" data-s="sin mixes publicados todavía">Mixes, próximamente <span className="code">(MX)</span></span></div>
         <Link className="tab" href="/" style={at(null, "4")} data-s="mixes"><span>Mixes</span></Link>
 
-        <div className="row" style={at(34, "5")}><Link href="/release/asua0001" data-s="news"><span className="lbl">untitled-08 ya está en SoundCloud</span><span className="ring full" /></Link></div>
+        <div className="row" style={at(34, "5")}><Link href={`/release/${latest.key}`} data-s="news"><span className="lbl">{latest.title} ya está en SoundCloud</span><span className="ring full" /></Link></div>
         <Link className="tab" href="/" style={at(null, "5")} data-s="novedades"><span>News</span></Link>
 
         <div className="row" style={at(30, "6")}><Link href="/about" data-s="manifiesto del colectivo"><span className="ring" /><span className="lbl">Authentic Soul Unique Art</span></Link></div>

@@ -11,4 +11,14 @@ npm run dev
 
 - `data/releases.ts`: catálogo (releases, tracks y audio en `/public/audio`).
 - `app/api/likes`: `GET ?trackId=` → `{ count, liked }` (público); `POST { trackId }` → toggle con sesión de Clerk. Cada track es un set de Redis `likes:<trackId>` con los userIds.
-- Variables: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`.
+- Variables: see `.env.example`.
+
+### Panel `/admin` (cargar releases)
+
+Solo la cuenta cuyo id de Clerk está en `ADMIN_USER_ID` puede entrar.
+
+1. Clerk dashboard → Users → copiá el id (`user_…`) de tu cuenta y ponelo en `ADMIN_USER_ID`.
+2. Vercel → Storage → crear un **Blob** store y conectarlo al proyecto (carga `BLOB_READ_WRITE_TOKEN`).
+3. En `/admin`: pegá el link de SoundCloud y tocá **Autocompletar** (título, artista y portada). Revisá la fecha, subí el mp3 de cada track y publicá. Aparece en el sitio al instante.
+
+Los releases guardados están en Upstash (hash `releases`) y tienen prioridad sobre `data/releases.ts`, que queda como semilla. El release más nuevo (por fecha) es el que aparece en el bloque destacado del index.
