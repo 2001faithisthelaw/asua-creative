@@ -4,6 +4,9 @@
 # Uso: handycam.sh entrada.mp4 salida.mp4 ["JUN.21 2003"]
 #   VERTICAL=1  -> 9:16 (480x854) en vez de 4:3 (640x480)
 #   WHITE=1     -> quema a blanco el último 1.2 s
+#   NOOSD=1     -> sin PLAY / fecha / hora
+#   BLOOM=0.85  -> intensidad del brillo quemado (0.3 suave … 1 fuerte)
+#   BRIGHT=0.04 -> brillo general
 #   FONT=/ruta/fuente.ttf para el timestamp
 set -euo pipefail
 IN="$1"; OUT="$2"; DATE="${3:-JUN.21 2003}"
@@ -26,22 +29,24 @@ if [ "${WHITE:-0}" = "1" ]; then
 fi
 TXT="fontsize=20:fontcolor=white@0.85:shadowcolor=black@0.6:shadowx=2:shadowy=2"
 
+OSD=""
+if [ "${NOOSD:-0}" != "1" ]; then
+  OSD=",drawtext=${FONTOPT}text='▶ PLAY':x=28:y=24:${TXT}, drawtext=${FONTOPT}text='${DATE}':x=w-tw-28:y=h-th-50:${TXT}, drawtext=${FONTOPT}text='17\:23\:%{eif\:mod(14+t\,60)\:d\:2}':x=w-tw-28:y=h-th-24:${TXT}"
+fi
 ffmpeg -v error -y -i "$IN" -filter_complex "
 [0:v]fps=24,scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},
- eq=contrast=1.12:brightness=0.04:saturation=0.82:gamma=1.08,
+ eq=contrast=1.12:brightness=${BRIGHT:-0.04}:saturation=0.82:gamma=1.08,
  curves=r='0/0.03 0.5/0.55 1/1':g='0/0.02 0.5/0.52 1/0.98':b='0/0.06 0.5/0.5 1/0.95',
  split[base][glow];
 [glow]curves=all='0/0 0.6/0 1/1',gblur=sigma=18[bloom];
-[base][bloom]blend=all_mode=screen:all_opacity=0.85,
+[base][bloom]blend=all_mode=screen:all_opacity=${BLOOM:-0.85},
  scale=${LW}:${LH}:flags=bilinear,
  chromashift=cbh=3:crh=-3,
  noise=alls=14:allf=t,
  scale=${W}:${H}:flags=neighbor,
  tmix=frames=2:weights='1 0.45',
- vignette=PI/4.5,
- drawtext=${FONTOPT}text='▶ PLAY':x=28:y=24:${TXT},
- drawtext=${FONTOPT}text='${DATE}':x=w-tw-28:y=h-th-50:${TXT},
- drawtext=${FONTOPT}text='17\:23\:%{eif\:mod(14+t\,60)\:d\:2}':x=w-tw-28:y=h-th-24:${TXT}
+ vignette=PI/4.5
+ ${OSD}
  ${WHITE_FILTER},format=yuv420p[v]" \
  -map "[v]" -an -c:v libx264 -crf 20 -preset medium -movflags +faststart "$OUT"
 echo "ok -> $OUT"
