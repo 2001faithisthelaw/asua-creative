@@ -22,3 +22,16 @@ Solo la cuenta cuyo id de Clerk está en `ADMIN_USER_ID` puede entrar.
 3. En `/admin`: pegá el link de SoundCloud y tocá **Autocompletar** (título, artista y portada). Revisá la fecha, subí el mp3 de cada track y publicá. Aparece en el sitio al instante.
 
 Los releases guardados están en Upstash (hash `releases`) y tienen prioridad sobre `data/releases.ts`, que queda como semilla. El release más nuevo (por fecha) es el que aparece en el bloque destacado del index.
+
+## Video con Claude Code
+
+Al abrir Claude Code en este repo:
+
+- Se ofrece instalar el plugin **ai-video-producer** (marketplace `danielrosehill`, configurado en `.claude/settings.json`). Comandos: `/setup-credentials` (una vez), `/install-video-workspace`, `/onboard`, `/draft-script`, `/storyboard`, `/run-pipeline`, `/assemble`. Conviene correrlos en una carpeta aparte por video, no en la raíz del sitio.
+- Skills en `.claude/skills/` copiados de [claude-code-video-toolkit](https://github.com/digitalsamba/claude-code-video-toolkit) (MIT): `ffmpeg`, `remotion-official`, `playwright-recording`.
+
+Los comandos `/setup` y `/video` del toolkit y sus herramientas con IA (voz, música, imágenes) necesitan el repo completo: clonalo aparte y abrí `claude` dentro de esa carpeta.
+
+### Plugin propio: `asua-video`
+
+En `claude-plugins/asua-video` (marketplace `asua` en `.claude-plugin/marketplace.json`). Comandos `/asua-video:montar`, `/asua-video:look`, `/asua-video:prompts` y skill `heavencore`. Ver su README. Requiere `ffmpeg` y `python3`.

@@ -1,0 +1,8 @@
+{
+  "name": "asua-video",
+  "version": "0.1.0",
+  "description": "Videos cortos estética ASUA: heavencore / weirdcore / found footage handycam 2000. Monta clips de referencia o generados con IA, aplica el look y escribe prompts para generadores gratis (Kling, Hailuo).",
+  "author": { "name": "ASUA CREATIVE" },
+  "license": "MIT",
+  "keywords": ["video", "ffmpeg", "heavencore", "weirdcore", "handycam", "found-footage", "y2k"]
+}
