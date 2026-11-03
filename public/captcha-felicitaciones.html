@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>felicitaciones!</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{--gray:#d4d0c8;--dark:#808080;--darker:#404040;--ink:#000;--red:#e10000;--link:#0000ee}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{color:var(--ink);font-family:Tahoma,Verdana,"MS Sans Serif",Geneva,Arial,sans-serif;font-size:11px;
+       display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;
+       background:#fff}
+
+  /* ---------- ventana tipo captcha viejo ---------- */
+  .win{position:relative;z-index:3;width:min(420px,100%);background:var(--gray);
+       border:2px solid;border-color:#fff var(--darker) var(--darker) #fff;box-shadow:1px 1px 0 #000,4px 4px 0 rgba(0,0,0,.25);padding:2px}
+  .win .bar{background:linear-gradient(90deg,#000 0%,#3a3a3a 60%,#9a9a9a 100%);color:#fff;font-weight:bold;font-size:11px;
+            padding:3px 4px;display:flex;justify-content:space-between;align-items:center}
+  .win .bar .x{width:16px;height:14px;background:var(--gray);color:#000;border:1px solid;border-color:#fff var(--darker) var(--darker) #fff;
+               font-size:10px;line-height:11px;text-align:center;font-weight:bold}
+  .win .body{background:#fff;margin:2px;border:1px solid var(--dark);padding:10px 12px 4px;line-height:1.5}
+  .win .body p{margin:0 0 6px}
+  .cap{display:block;width:300px;max-width:100%;height:auto;margin:6px 0 10px;border:1px solid #999}
+  .row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+  .row label{font-weight:bold}
+  .row input{width:170px;height:24px;border:2px inset #fff;border-color:var(--dark) #fff #fff var(--dark);
+             padding:2px 4px;font:400 13px/normal Tahoma,Verdana,Arial,sans-serif;color:#000;-webkit-text-fill-color:#000;caret-color:#000;background:#fff;outline:none}
+  .link{color:var(--link);text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font:inherit}
+  .link:visited,.link.v{color:#551a8b}
+  .err{color:var(--red);min-height:15px;margin:0 0 4px}
+  .win .foot{padding:6px 4px 4px;display:flex;justify-content:flex-end;gap:6px}
+  .btn{font:inherit;font-size:11px;min-width:75px;padding:3px 10px;background:var(--gray);color:#000;cursor:pointer;
+       border:2px solid;border-color:#fff var(--darker) var(--darker) #fff;box-shadow:inset -1px -1px 0 var(--dark)}
+  .btn:active{border-color:var(--darker) #fff #fff var(--darker);box-shadow:inset 1px 1px 0 var(--dark)}
+  .btn.primary{outline:1px solid #000;outline-offset:-1px;font-weight:bold}
+  .shake{animation:shake .3s steps(4)}
+  @keyframes shake{25%{transform:translate(-6px,2px)}50%{transform:translate(6px,-2px)}75%{transform:translate(-4px,0)}}
+
+  .veil{position:fixed;inset:0;z-index:5;display:none;align-items:center;justify-content:center;padding:16px}
+  .veil.on{display:flex}
+  .veil .win{width:min(360px,100%);transform:translate(38px,26px)}
+  .sign{margin-top:10px}
+
+  /* ---------- entrada ---------- */
+  #show{position:fixed;inset:0;z-index:10;display:none;background:#000;overflow:hidden}
+  #show.on{display:block}
+  #show canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+  #show .scan{position:absolute;inset:0;pointer-events:none;
+     background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 1px,transparent 1px 3px);mix-blend-mode:screen}
+  #show .vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.85) 100%)}
+  #msg{position:absolute;left:0;right:0;bottom:16%;text-align:center;font-family:VT323,"Courier New",monospace;
+       font-size:clamp(22px,4.4vw,40px);color:#e9eef7;letter-spacing:.06em;text-shadow:0 0 8px rgba(160,190,255,.7);
+       padding:0 16px;white-space:pre-line}
+  #msg .cur{display:inline-block;width:.55em;background:currentColor;animation:blink .7s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  #clock{position:absolute;top:7%;left:0;right:0;text-align:center;font-family:VT323,monospace;font-size:clamp(18px,3vw,28px);
+         color:rgba(220,230,255,.55);letter-spacing:.3em}
+  #load{position:absolute;left:50%;top:68%;transform:translate(-50%,-50%);width:min(320px,80vw);font-family:VT323,monospace;
+        color:#cfd8ea;font-size:20px;text-align:center}
+  #load .track{height:10px;border:1px solid #cfd8ea;margin-top:8px;padding:1px}
+  #load .fill{height:100%;width:0;background:#cfd8ea}
+  #white{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="win" id="main" role="dialog" aria-labelledby="t1">
+  <div class="bar" id="t1"><span>felicitaciones!</span><span class="x">x</span></div>
+  <div class="body">
+    <p>bienvenido a tu nuevo mundo! todos t aman aca.</p>
+    <p>escribi el txt q ves abajo...</p>
+    <canvas class="cap" id="cap" width="300" height="70" aria-label="captcha"></canvas>
+    <div class="row">
+      <label for="ans">txt en la caja:</label>
+      <input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <div class="err" id="err"></div>
+    <p><button class="link" id="miedo" type="button">tenes miedo?</button></p>
+  </div>
+  <div class="foot">
+    <button class="btn primary" id="ok" type="button">verificar</button>
+    <button class="btn" id="cancel" type="button">cancelar</button>
+  </div>
+</div>
+
+<div class="veil" id="veil">
+  <div class="win" role="dialog" aria-labelledby="t2">
+    <div class="bar" id="t2"><span>tenes miedo?</span><span class="x">x</span></div>
+    <div class="body">
+      <p>no stas perdido, stas explorando.</p>
+      <p>no tngas miedo ni esperanza_____</p>
+      <p>hace click en "aceptar" y salva tu alma.</p>
+      <p class="sign">suerte.<br>a.s.o.c</p>
+    </div>
+    <div class="foot"><button class="btn primary" id="aceptar" type="button">aceptar</button></div>
+  </div>
+</div>
+
+<div id="show" aria-live="polite">
+  <canvas id="fx"></canvas>
+  <div id="clock"></div>
+  <div id="load"></div>
+  <div id="msg"></div>
+  <div class="scan"></div><div class="vig"></div>
+  <div id="white"></div>
+</div>
+
+<script>
+/* ============ CONFIGURACIÓN ============ */
+const DESTINO = '/';                     // página a la que se entra al final
+const RESPUESTA = 'muchas gracias';      // lo que hay que escribir
+
+/* ============ captcha dibujado y deformado ============ */
+const cap = document.getElementById('cap');
+function drawCaptcha(seed){
+  const W = cap.width, H = cap.height, g = cap.getContext('2d');
+  const off = document.createElement('canvas'); off.width = W; off.height = H;
+  const o = off.getContext('2d');
+  const r = n => Math.abs((Math.sin(n*12.9898+seed*78.233)*43758.5453)%1);
+  o.fillStyle = '#fff'; o.fillRect(0,0,W,H);
+  // fondo con manchas grises tenues (scan viejo)
+  for(let i=0;i<500;i++){ const v=200+r(i)*50|0; o.fillStyle=`rgb(${v},${v},${v})`; o.fillRect(r(i+.3)*W, r(i+.7)*H, 1+r(i+.9)*2, 1); }
+  o.fillStyle = '#111'; o.textBaseline = 'middle';
+  o.save(); o.translate(14,36); o.rotate(-.06);
+  o.font = '700 34px "Times New Roman", Times, serif'; o.fillText('muchas', 0, 0); o.restore();
+  o.save(); o.translate(162,40); o.rotate(.08); o.scale(1,1.2);
+  o.font = 'italic 700 32px "Times New Roman", Times, serif'; o.fillText('gracias', 0, 0); o.restore();
+  // línea que atraviesa las palabras
+  o.strokeStyle = '#222'; o.lineWidth = 2; o.beginPath();
+  for(let x=0;x<=W;x+=4){ const y = H/2 + Math.sin(x*.03+seed)*10 + 4; x?o.lineTo(x,y):o.moveTo(x,y); } o.stroke();
+  const src = o.getImageData(0,0,W,H), dst = g.createImageData(W,H);
+  const a1 = 4+r(1)*3, a2 = 3+r(2)*2, f1 = .035+r(3)*.02, f2 = .07+r(4)*.03;
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    let sx = Math.round(x + Math.sin(y*f2+seed)*a2), sy = Math.round(y + Math.sin(x*f1+seed*2)*a1);
+    sx = Math.max(0,Math.min(W-1,sx)); sy = Math.max(0,Math.min(H-1,sy));
+    const si = (sy*W+sx)*4, di = (y*W+x)*4, nz = (Math.random()-.5)*40;
+    for(let c=0;c<3;c++) dst.data[di+c] = Math.max(0,Math.min(255,src.data[si]+nz));
+    dst.data[di+3]=255;
+  }
+  g.putImageData(dst,0,0);
+  // ablandar como jpg de 2006
+  g.filter = 'blur(.5px)'; g.drawImage(cap,0,0); g.filter = 'none';
+}
+drawCaptcha(1.3);
+
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z]+/g,' ').trim();
+const ans = document.getElementById('ans'), err = document.getElementById('err'), main = document.getElementById('main');
+
+function verificar(){
+  const v = norm(ans.value);
+  if (v === RESPUESTA || v.replace(/ /g,'') === RESPUESTA.replace(/ /g,'')) { entrar(); return; }
+  err.textContent = ans.value.trim() ? 'eso no es lo q dice la caja. proba d nuevo.' : 'escribi el txt d la caja.';
+  main.classList.remove('shake'); void main.offsetWidth; main.classList.add('shake');
+  ans.select();
+}
+document.getElementById('ok').onclick = verificar;
+ans.addEventListener('keydown', e => { if (e.key === 'Enter') verificar(); });
+document.getElementById('cancel').onclick = () => { ans.value=''; err.textContent=''; ans.focus(); };
+
+/* ventana ¿Tenés miedo? */
+const veil = document.getElementById('veil');
+document.getElementById('miedo').onclick = () => { document.getElementById('miedo').classList.add('v'); veil.classList.add('on'); document.getElementById('aceptar').focus(); };
+document.getElementById('aceptar').onclick = () => { veil.classList.remove('on'); ans.focus(); };
+veil.addEventListener('click', e => { if (e.target === veil) veil.classList.remove('on'); });
+
+/* ============ animación de entrada ============ */
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const show = document.getElementById('show'), fx = document.getElementById('fx'), ctx = fx.getContext('2d');
+const msg = document.getElementById('msg'), clock = document.getElementById('clock'), load = document.getElementById('load'), white = document.getElementById('white');
+
+let phase = 'dark', t0 = 0, stars = [];
+const BAYER = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+const STAR = ['.....#.....','.....#.....','.#...#...#.','..#.###.#..','...#####...','###########','...#####...','..#.###.#..','.#...#...#.','.....#.....','.....#.....'];
+const CASTLE = ['#.#.#...........#.#.#','#####.....#.....#####','.###.....###.....###.','.#.#....#####....#.#.','.###...###.###...###.','.###..#########..###.','.#.#.###########.#.#.','.###################.','.#######.....#######.','.#######.....#######.','#########...#########'];
+
+function resize(){ fx.width = Math.ceil(innerWidth/3); fx.height = Math.ceil(innerHeight/3); }
+addEventListener('resize', resize);
+
+function sprite(rows, cx, cy, px, color){
+  ctx.fillStyle = color;
+  const w = rows[0].length, h = rows.length;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++) if(rows[y][x]==='#')
+    ctx.fillRect(Math.round(cx+(x-w/2)*px), Math.round(cy+(y-h/2)*px), px, px);
+}
+
+function frame(ts){
+  if(!show.classList.contains('on')) return;
+  const t = (ts - t0)/1000, W = fx.width, H = fx.height;
+  // cielo: de noche azul grisácea (flash 2001) a amanecer hopecore
+  const k = phase==='dawn' ? Math.min(1,(t-dawnAt)/3.5) : 0;
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0, mix([6,8,16],[255,196,214],k));
+  g.addColorStop(.6, mix([10,14,28],[255,226,180],k));
+  g.addColorStop(1, mix([2,2,6],[255,244,230],k));
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  // grano de película
+  const n = 900 + (1-k)*1400;
+  for(let i=0;i<n;i++){
+    const v = Math.random()*255|0;
+    ctx.fillStyle = `rgba(${v},${v},${v},${.07+(1-k)*.08})`;
+    ctx.fillRect(Math.random()*W|0, Math.random()*H|0, 1, 1);
+  }
+  // esfera roja tramada que gira (luz orbitando)
+  const R = Math.min(W,H)*.17, cx = W/2, cy = H*.42 - k*H*.08, ang = t*1.4;
+  const L = norm3([-.55*Math.cos(ang)-.25*Math.sin(ang), -.6, .58]);
+  ctx.fillStyle = mixs([225,0,0],[225,30,60],k);
+  for(let y=-R;y<=R;y++) for(let x=-R;x<=R;x++){
+    const nx=x/R, ny=y/R, r2=nx*nx+ny*ny; if(r2>1) continue;
+    const nz=Math.sqrt(1-r2), lum=Math.max(0,nx*L[0]+ny*L[1]+nz*L[2]);
+    const ink=Math.min(1,Math.max(0,(1-lum-.05)/.85));
+    const xi=(x+1000)|0, yi=(y+1000)|0;
+    if(ink > BAYER[yi&3][xi&3]/16+1/32) ctx.fillRect(Math.round(cx+x),Math.round(cy+y),1,1);
+  }
+  // estrella central parpadeante (estilo GIF)
+  const blink = (Math.sin(t*9)>-.2) ? 1 : 0;
+  if(blink) sprite(STAR, cx, cy, Math.max(1,Math.round(R/22)), k>.5 ? '#fff' : '#000');
+  // estrellitas pixel que titilan
+  for(const s of stars){
+    const p = (t*s.sp + s.ph)%1, sz = [0,1,2,3,2,1,0,0][Math.floor(p*8)];
+    if(!sz) continue;
+    ctx.fillStyle = k>.4 ? `rgba(255,255,255,${.9})` : '#dfe6ff';
+    ctx.fillRect(s.x, s.y, 1, 1);
+    for(let i=1;i<sz;i++){ ctx.fillRect(s.x+i,s.y,1,1); ctx.fillRect(s.x-i,s.y,1,1); ctx.fillRect(s.x,s.y+i,1,1); ctx.fillRect(s.x,s.y-i,1,1); }
+  }
+  // castillo que sube con el amanecer
+  if(k>0){
+    const px = Math.max(1,Math.round(Math.min(W,H)/120));
+    sprite(CASTLE, W/2, H + 40 - k*(H*.07+40), px, `rgba(30,20,40,${.85})`);
+  }
+  // parpadeo de proyector
+  if(phase==='dark' && Math.random()<.05){ ctx.fillStyle='rgba(255,255,255,.06)'; ctx.fillRect(0,0,W,H); }
+  requestAnimationFrame(frame);
+}
+let dawnAt = 0;
+const mix = (a,b,k) => `rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*k)).join(',')})`;
+const mixs = mix;
+function norm3(v){ const l=Math.hypot(...v); return v.map(x=>x/l); }
+
+async function type(text, speed=55){
+  msg.innerHTML = '';
+  const span = document.createElement('span'), cur = document.createElement('span');
+  cur.className='cur'; cur.innerHTML='&nbsp;'; msg.append(span, cur);
+  for(const ch of text){ span.textContent += ch; await sleep(ch===' '?speed*.6:speed); }
+}
+
+function tick(){
+  if(!show.classList.contains('on')) return;
+  const d = new Date(), z = n => String(n).padStart(2,'0');
+  clock.textContent = `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}:${z(Math.floor(d.getMilliseconds()/10))}`;
+  setTimeout(tick, 40);
+}
+
+async function entrar(){
+  ans.blur();
+  location.href = DESTINO;   // directo a la página principal, sin animación
+}
+
+
+ans.focus();
+</script>
+</body>
+</html>
