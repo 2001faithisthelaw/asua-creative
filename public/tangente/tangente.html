@@ -79,7 +79,28 @@ a.red:hover, button.red:hover { text-decoration: underline; }
 .door form { display: inline; }
 .door input { width: 10.6ch; border: 0; border-bottom: 1px solid var(--ink); background: transparent; font: inherit; padding: 0; outline: none; text-transform: lowercase; color: var(--maroon); letter-spacing: 0; }
 .door input::placeholder { color: #c4c4c4; }
-.door .ghost { color: var(--maroon); }
+/* the scope: a small military camera reticle that blinks around the screen carrying one letter at a time */
+.scope { position: fixed; z-index: 61; width: 66px; height: 66px; margin: -33px 0 0 -33px; cursor: crosshair; }
+.scope .c { position: absolute; width: 9px; height: 9px; border: 0 solid var(--negro); }
+.scope .tl { left: 0; top: 0; border-left-width: 1px; border-top-width: 1px; }
+.scope .tr { right: 0; top: 0; border-right-width: 1px; border-top-width: 1px; }
+.scope .bl { left: 0; bottom: 0; border-left-width: 1px; border-bottom-width: 1px; }
+.scope .br { right: 0; bottom: 0; border-right-width: 1px; border-bottom-width: 1px; }
+.scope::before, .scope::after { content: ""; position: absolute; background: var(--negro); }
+.scope::before { left: 50%; top: 4px; height: 12px; width: 1px; opacity: .5; box-shadow: 0 46px 0 var(--negro); }
+.scope::after { top: 50%; left: 4px; width: 12px; height: 1px; opacity: .5; box-shadow: 46px 0 0 var(--negro); }
+.scope .dot { display: none; }
+.scope .ch { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -52%); font: 700 22px/1 var(--font-entrada); color: var(--maroon); padding: 0 3px; }
+.scope .rec, .scope .xy, .scope .idx { position: absolute; font: 11px/1 var(--font-texto); color: var(--gris-texto); white-space: nowrap; }
+.scope .rec { left: 0; top: -14px; color: var(--red); }
+.scope .xy { left: 0; bottom: -14px; }
+.scope .idx { right: -2px; top: -14px; }
+.scope.on { animation: scopeIn .14s steps(2) both; }
+@keyframes scopeIn { from { opacity: 0; transform: scale(1.6); } }
+.scope.got .ch { background: var(--maroon); color: #fff; }
+.door .caught { margin-top: 18px; display: flex; gap: 6px; font: 22px/1 var(--font-entrada); color: var(--gris-claro); min-height: 24px; }
+.door .caught span { width: 14px; text-align: center; border-bottom: 1px solid var(--gris-claro); }
+.door .caught span.on { color: var(--maroon); border-color: var(--maroon); }
 .door .ghost .cur { display: inline-block; width: 2px; height: .9em; background: var(--maroon); vertical-align: -.1em; animation: blink .8s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 .door .again { margin-top: 10px; font: 11px var(--sans); color: var(--maroon); text-decoration: underline; }
@@ -304,11 +325,12 @@ html.inv { filter: invert(1); }
     <div><span class="w">presta</span> <span class="w">atención.</span></div>
     <div class="l2"><span class="w">podrías</span> <span class="w">perderte</span> <span class="w">algo.</span></div>
     <div style="margin-top:1.6em"><span class="w">no</span> <span class="w">stas</span> <span class="w">perdido,</span> <span class="w">stas</span>
-      <span class="ghost w" id="door-ghost" aria-hidden="true">explorando</span><form id="door-f" autocomplete="off" hidden><label class="sr" for="door-in">contraseña</label><input id="door-in" spellcheck="false" autocapitalize="off" maxlength="16" placeholder="__________" aria-describedby="door-hint"></form><span class="w">.</span></div>
+      <form id="door-f" class="w" autocomplete="off"><label class="sr" for="door-in">contraseña</label><input id="door-in" spellcheck="false" autocapitalize="off" maxlength="16" placeholder="__________" aria-describedby="door-hint"></form><span class="w">.</span></div>
+    <div class="caught" id="door-caught" aria-label="letras atrapadas"></div>
     <div class="hint" id="door-hint" aria-live="polite"></div>
-    <button class="again" id="door-again" type="button" hidden>ver la palabra de nuevo</button>
   </div>
   <div class="meta mono">transmisión recuperada</div>
+  <button class="scope" id="scope" type="button" aria-label="mira" hidden><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i><span class="dot"></span><b class="ch" id="scope-ch"></b><span class="rec">● rec</span><span class="xy" id="scope-xy"></span><span class="idx" id="scope-idx"></span></button>
 </div>
 
 <!-- ================= the page ================= -->
@@ -474,40 +496,49 @@ html.inv { filter: invert(1); }
   function openDoor() {
     $('door').hidden = false; $('stage').hidden = true;
     var ws = $('door').querySelectorAll('.w');
-    $('door-f').hidden = true; $('door-again').hidden = true; $('door-hint').textContent = '';
-    $('door-ghost').hidden = false; $('door-ghost').textContent = 'explorando';
-    ws.forEach(function (w, i) { w.classList.remove('on'); setTimeout(function () { w.classList.add('on'); }, calm ? 0 : 500 + i * 260); });
-    setTimeout(eraseWord, (calm ? 0 : 500 + ws.length * 260) + 2200);
+    $('door-hint').innerHTML = '';
+    var cg = $('door-caught'); cg.innerHTML = ''; for (var k = 0; k < 10; k++) cg.appendChild(document.createElement('span'));
+    ws.forEach(function (w, i) { w.classList.remove('on'); setTimeout(function () { w.classList.add('on'); if (w.id === 'door-f') $('door-in').focus(); }, calm ? 0 : 500 + i * 260); });
+    setTimeout(function () {
+      $('door-hint').innerHTML = 'presta atención: la palabra que falta aparece en la mira, <b>una letra por vez</b>.<br>tocá la mira para guardar la letra.';
+      scopeLoop(0);
+    }, (calm ? 0 : 500 + ws.length * 260) + 600);
   }
-  /* the password is shown, then erased in front of you: "presta atención. podrías perderte algo." */
-  var eraseT;
-  function eraseWord() {
-    var g = $('door-ghost'), word = 'explorando', n = word.length;
-    g.hidden = false; clearInterval(eraseT);
-    eraseT = setInterval(function () {
-      n--; g.innerHTML = word.slice(0, Math.max(0, n)) + '<span class="cur"></span>';
-      if (n <= 0) {
-        clearInterval(eraseT); g.hidden = true; $('door-f').hidden = false; $('door-in').focus();
-        $('door-hint').innerHTML = 'se borró una palabra. <b>escribila</b> en la línea y apretá enter.';
-        $('door-again').hidden = false;
-      }
-    }, calm ? 1 : 110);
+  /* "presta atención. podrías perderte algo." — a camera reticle blinks around the void carrying the
+     password one letter at a time, in order; catching it keeps that letter in the slots under the phrase. */
+  var WORD = 'explorando', scopeT = null, scopeI = 0;
+  function scopeLoop(i) {
+    clearTimeout(scopeT); scopeI = i % WORD.length;
+    var sc = $('scope'), W = innerWidth, H = innerHeight, x, y, tries = 0;
+    var box = $('door').querySelector('.door-in').getBoundingClientRect();
+    do { x = 40 + Math.random() * (W - 80); y = 50 + Math.random() * (H - 100); tries++; }
+    while (tries < 30 && x > box.left - 40 && x < box.right + 40 && y > box.top - 40 && y < box.bottom + 40);
+    sc.style.left = (x | 0) + 'px'; sc.style.top = (y | 0) + 'px';
+    $('scope-ch').textContent = WORD[scopeI]; $('scope-idx').textContent = p2(scopeI + 1) + '/10';
+    $('scope-xy').textContent = 'x' + p2(x / 10 | 0) + ' y' + p2(y / 10 | 0);
+    sc.classList.remove('got', 'on'); void sc.offsetWidth; sc.hidden = false; sc.classList.add('on');
+    var vis = calm ? 2200 : 950 + Math.random() * 350, gap = calm ? 600 : 500 + Math.random() * 900;
+    scopeT = setTimeout(function () { sc.hidden = true; scopeT = setTimeout(function () { scopeLoop(scopeI + 1); }, gap); }, vis);
   }
-  var doorTries = 0;
-  $('door-again').addEventListener('click', function () {
-    var g = $('door-ghost'); $('door-f').hidden = true; g.hidden = false; g.textContent = 'explorando'; $('door-again').hidden = true;
-    setTimeout(eraseWord, 1600);
+  function stopScope() { clearTimeout(scopeT); $('scope').hidden = true; }
+  $('scope').addEventListener('click', function () {
+    var slot = $('door-caught').children[scopeI]; if (!slot) return;
+    slot.textContent = WORD[scopeI]; slot.classList.add('on'); this.classList.add('got');
+    if ([].every.call($('door-caught').children, function (c) { return c.classList.contains('on'); }))
+      $('door-hint').innerHTML = 'la tenés. <b>escribila</b> en la línea y apretá enter.';
+    $('door-in').focus();
   });
+  var doorTries = 0;
   $('door-f').addEventListener('submit', function (e) {
     e.preventDefault();
     if (norm($('door-in').value) !== PW[0]) {   /* wrong: the door gives a little more each time */
       doorTries++;
-      var H = ['era la palabra roja que se borró. <b>10 letras</b>, empieza con <b>e</b>.', 'lo contrario de estar perdido: <b>e x p l _ _ _ _ _ _</b>', '<b>e x p l o r _ _ _ _</b>', 'escribí: <b>explorando</b>'];
+      var H = ['mirá la mira: aparece en distintos lados con <b>una letra</b> y su número (01/10, 02/10…).', 'tocala cuando aparece y la letra se guarda abajo. son <b>10</b>, empieza con <b>e</b>.', 'lo contrario de estar perdido: <b>e x p l _ _ _ _ _ _</b>', 'escribí: <b>explorando</b>'];
       $('door-hint').innerHTML = 'no. ' + H[Math.min(doorTries, H.length) - 1];
       var f = $('door-f'); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
       $('door-in').value = ''; return;
     }
-    setLevel(1); inv(); enterStage(true);
+    stopScope(); setLevel(1); inv(); enterStage(true);
   });
   function enterStage(fromDoor) {
     $('stage').hidden = false; render();
