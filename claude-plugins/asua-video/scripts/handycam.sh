@@ -8,6 +8,8 @@
 #   BLOOM=0.85  -> intensidad del brillo quemado (0.3 suave … 1 fuerte)
 #   BRIGHT=0.04 -> brillo general
 #   TONE=cold   -> tono frío / drainer (default warm)
+#   STYLE=ps2   -> look PS2 / survival horror (Fatal Frame): menos resolución, colores posterizados,
+#                 scanlines, parpadeo, grano pesado, más desaturado
 #   FONT=/ruta/fuente.ttf para el timestamp
 set -euo pipefail
 IN="$1"; OUT="$2"; DATE="${3:-JUN.21 2003}"
@@ -33,6 +35,12 @@ if [ "${TONE:-warm}" = "cold" ]; then
 else
   CURVES="curves=r='0/0.03 0.5/0.55 1/1':g='0/0.02 0.5/0.52 1/0.98':b='0/0.06 0.5/0.5 1/0.95'"
 fi
+PS2PRE=""; PS2POST=""
+if [ "${STYLE:-}" = "ps2" ]; then
+  LW=$((LW*4/5)); LH=$((LH*4/5))
+  PS2PRE="hue=s=0.55,eq=brightness='0.035*(random(1)-0.5)':eval=frame,lutrgb=r='floor(val/10)*10':g='floor(val/10)*10':b='floor(val/9)*9',"
+  PS2POST=",geq=lum='lum(X,Y)*(0.86+0.14*mod(Y,2))':cb='cb(X,Y)':cr='cr(X,Y)',noise=alls=8:allf=t"
+fi
 TXT="fontsize=20:fontcolor=white@0.85:shadowcolor=black@0.6:shadowx=2:shadowy=2"
 
 OSD=""
@@ -46,12 +54,12 @@ ffmpeg -v error -y -i "$IN" -filter_complex "
  split[base][glow];
 [glow]curves=all='0/0 0.6/0 1/1',gblur=sigma=18[bloom];
 [base][bloom]blend=all_mode=screen:all_opacity=${BLOOM:-0.85},
- scale=${LW}:${LH}:flags=bilinear,
+ scale=${LW}:${LH}:flags=bilinear,${PS2PRE}
  chromashift=cbh=3:crh=-3,
  noise=alls=14:allf=t,
  scale=${W}:${H}:flags=neighbor,
  tmix=frames=2:weights='1 0.45',
- vignette=PI/4.5
+ vignette=PI/4.5${PS2POST}
  ${OSD}
  ${WHITE_FILTER},format=yuv420p[v]" \
  -map "[v]" -an -c:v libx264 -crf 20 -preset medium -movflags +faststart "$OUT"
