@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "danielrosehill": {
+      "source": {
+        "source": "github",
+        "repo": "danielrosehill/Claude-Code-Plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "ai-video-producer@danielrosehill": true
+  }
+}
