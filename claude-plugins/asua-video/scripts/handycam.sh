@@ -7,6 +7,7 @@
 #   NOOSD=1     -> sin PLAY / fecha / hora
 #   BLOOM=0.85  -> intensidad del brillo quemado (0.3 suave … 1 fuerte)
 #   BRIGHT=0.04 -> brillo general
+#   TONE=cold   -> tono frío / drainer (default warm)
 #   FONT=/ruta/fuente.ttf para el timestamp
 set -euo pipefail
 IN="$1"; OUT="$2"; DATE="${3:-JUN.21 2003}"
@@ -27,6 +28,11 @@ if [ "${WHITE:-0}" = "1" ]; then
   ST=$(awk -v d="$DUR" 'BEGIN{printf "%.2f", d-1.2}')
   WHITE_FILTER=",fade=t=out:st=${ST}:d=1.2:color=white"
 fi
+if [ "${TONE:-warm}" = "cold" ]; then
+  CURVES="curves=r='0/0.02 0.5/0.46 1/0.95':g='0/0.03 0.5/0.50 1/0.98':b='0/0.08 0.5/0.57 1/1'"
+else
+  CURVES="curves=r='0/0.03 0.5/0.55 1/1':g='0/0.02 0.5/0.52 1/0.98':b='0/0.06 0.5/0.5 1/0.95'"
+fi
 TXT="fontsize=20:fontcolor=white@0.85:shadowcolor=black@0.6:shadowx=2:shadowy=2"
 
 OSD=""
@@ -36,7 +42,7 @@ fi
 ffmpeg -v error -y -i "$IN" -filter_complex "
 [0:v]fps=24,scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},
  eq=contrast=1.12:brightness=${BRIGHT:-0.04}:saturation=0.82:gamma=1.08,
- curves=r='0/0.03 0.5/0.55 1/1':g='0/0.02 0.5/0.52 1/0.98':b='0/0.06 0.5/0.5 1/0.95',
+ ${CURVES},
  split[base][glow];
 [glow]curves=all='0/0 0.6/0 1/1',gblur=sigma=18[bloom];
 [base][bloom]blend=all_mode=screen:all_opacity=${BLOOM:-0.85},
