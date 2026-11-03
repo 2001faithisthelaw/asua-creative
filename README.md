@@ -31,3 +31,7 @@ Al abrir Claude Code en este repo:
 - Skills en `.claude/skills/` copiados de [claude-code-video-toolkit](https://github.com/digitalsamba/claude-code-video-toolkit) (MIT): `ffmpeg`, `remotion-official`, `playwright-recording`.
 
 Los comandos `/setup` y `/video` del toolkit y sus herramientas con IA (voz, música, imágenes) necesitan el repo completo: clonalo aparte y abrí `claude` dentro de esa carpeta.
+
+### Plugin propio: `asua-video`
+
+En `claude-plugins/asua-video` (marketplace `asua` en `.claude-plugin/marketplace.json`). Comandos `/asua-video:montar`, `/asua-video:look`, `/asua-video:prompts` y skill `heavencore`. Ver su README. Requiere `ffmpeg` y `python3`.

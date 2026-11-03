@@ -5,9 +5,16 @@
         "source": "github",
         "repo": "danielrosehill/Claude-Code-Plugins"
       }
+    },
+    "asua": {
+      "source": {
+        "source": "github",
+        "repo": "2001faithisthelaw/asua-creative"
+      }
     }
   },
   "enabledPlugins": {
-    "ai-video-producer@danielrosehill": true
+    "ai-video-producer@danielrosehill": true,
+    "asua-video@asua": true
   }
 }

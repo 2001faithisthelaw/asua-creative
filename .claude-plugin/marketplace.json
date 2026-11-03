@@ -1,0 +1,16 @@
+{
+  "name": "asua",
+  "owner": {
+    "name": "ASUA CREATIVE"
+  },
+  "metadata": {
+    "description": "Plugins de Claude Code de ASUA CREATIVE"
+  },
+  "plugins": [
+    {
+      "name": "asua-video",
+      "source": "./claude-plugins/asua-video",
+      "description": "Videos cortos heavencore / handycam 2000: montaje, look y prompts IA."
+    }
+  ]
+}
