@@ -25,8 +25,8 @@
   .cap{display:block;width:300px;max-width:100%;height:auto;margin:6px 0 10px;border:1px solid #999}
   .row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px}
   .row label{font-weight:bold}
-  .row input{width:170px;height:20px;border:2px inset #fff;border-color:var(--dark) #fff #fff var(--dark);
-             padding:1px 3px;font:inherit;font-size:12px;background:#fff;outline:none}
+  .row input{width:170px;height:24px;border:2px inset #fff;border-color:var(--dark) #fff #fff var(--dark);
+             padding:2px 4px;font:400 13px/normal Tahoma,Verdana,Arial,sans-serif;color:#000;-webkit-text-fill-color:#000;caret-color:#000;background:#fff;outline:none}
   .link{color:var(--link);text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font:inherit}
   .link:visited,.link.v{color:#551a8b}
   .err{color:var(--red);min-height:15px;margin:0 0 4px}
@@ -254,25 +254,7 @@ function tick(){
 
 async function entrar(){
   ans.blur();
-  // la ventana se va como un SWF que se corta
-  for(const o of [.2,1,.0,.8,0]){ main.style.opacity=o; await sleep(70); }
-  show.classList.add('on'); resize();
-  stars = Array.from({length:60},()=>({x:Math.random()*fx.width|0,y:Math.random()*fx.height*.75|0,sp:.3+Math.random()*.8,ph:Math.random()}));
-  t0 = performance.now(); requestAnimationFrame(frame); tick();
-  // precarga estilo flash
-  load.innerHTML = 'cargando tu mundo...<div class="track"><div class="fill"></div></div><div id="pc">0%</div>';
-  const fill = load.querySelector('.fill'), pc = load.querySelector('#pc');
-  for(let p=0;p<=100;p+= (p<70?7:p<97?3:1)){ fill.style.width=p+'%'; pc.textContent=p+'%'; await sleep(p>94?160:55); }
-  await sleep(250); load.innerHTML='';
-  await type('muchas gracias.'); await sleep(900);
-  await type('el mundo no s termina.\ns empieza.'); await sleep(1300);
-  await type('todos t aman aca.'); await sleep(1100);
-  phase = 'dawn'; dawnAt = (performance.now()-t0)/1000;
-  msg.style.color = '#3a2a3a'; msg.style.bottom = '24%'; msg.style.textShadow = '0 0 10px rgba(255,255,255,.9)'; clock.style.color='rgba(80,50,70,.5)';
-  await type('bienvenido a tu nuevo mundo ✦', 60); await sleep(2200);
-  white.style.transition = 'opacity 1.2s ease-in'; white.style.opacity = 1;
-  await sleep(1300);
-  location.href = DESTINO;
+  location.href = DESTINO;   // directo a la página principal, sin animación
 }
 
 
