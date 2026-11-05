@@ -1,0 +1,11 @@
+{
+  "$schema": "../schema/domain.schema.json",
+  "owner": { "github": "2001faithisthelaw" },
+  "description": "asua: label site with an archive of released tracks, explored through an interactive game",
+  "deploy": {
+    "repo": "2001faithisthelaw/asua-creative",
+    "branch": "main",
+    "build": "",
+    "output": "docs"
+  }
+}
