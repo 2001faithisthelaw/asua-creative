@@ -1,8 +1,8 @@
 # asua · tangente — static copy
 
-Live: https://asuacreative.netlify.app (Netlify site name "asuacreative", connected to this repo: base directory `docs`, no build command, publish `docs`).
-Also works on GitHub Pages: repo **Settings → Pages → Deploy from a branch → `main` / `/docs`**.
+Live on GitHub Pages: https://2001faithisthelaw.github.io/asua-creative/
+Repo **Settings → Pages → Deploy from a branch → `main` / `/docs`**. Every push to `main` that touches this folder republishes it.
 
 - `index.html` is the whole game (HTML + CSS + JS). Assets are relative: `images/`, `fonts/`, `audio/`, `og.jpg`.
-- No server or build step. Any static host works (Netlify Drop, Cloudflare Pages): upload this folder.
+- No server or build step; any static host works with this folder as is.
 - The Vercel route `/tangente` serves `public/tangente/tangente.html`; this folder is a separate copy, so edit both or pick one.
