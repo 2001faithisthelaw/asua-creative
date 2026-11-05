@@ -1,6 +1,6 @@
 # asua · tangente — static copy
 
-Live domain: https://asuacreative.xyz (Netlify, connected to this repo: base directory `docs`, no build command, publish `docs`).
+Live: https://asuacreative.netlify.app (Netlify site name "asuacreative", connected to this repo: base directory `docs`, no build command, publish `docs`).
 Also works on GitHub Pages: repo **Settings → Pages → Deploy from a branch → `main` / `/docs`**.
 
 - `index.html` is the whole game (HTML + CSS + JS). Assets are relative: `images/`, `fonts/`, `audio/`, `og.jpg`.
