@@ -1,7 +1,7 @@
 # asua · tangente — static copy
 
-Free hosting with GitHub Pages: repo **Settings → Pages → Deploy from a branch → `main` / `/docs`**.
-It goes live at https://2001faithisthelaw.github.io/asua-creative/
+Live: https://asuacreative.netlify.app (Netlify site name "asuacreative", connected to this repo: base directory `docs`, no build command, publish `docs`).
+Also works on GitHub Pages: repo **Settings → Pages → Deploy from a branch → `main` / `/docs`**.
 
 - `index.html` is the whole game (HTML + CSS + JS). Assets are relative: `images/`, `fonts/`, `audio/`, `og.jpg`.
 - No server or build step. Any static host works (Netlify Drop, Cloudflare Pages): upload this folder.
