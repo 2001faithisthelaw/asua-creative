@@ -1,0 +1,11 @@
+# Netlify: this folder is the whole site (static, no build).
+# In Netlify set Base directory = docs, Build command = (empty), Publish directory = docs.
+[build]
+  publish = "."
+  command = ""
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=31536000, immutable"
