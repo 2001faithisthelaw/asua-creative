@@ -1,12 +1,16 @@
-import { TANGENTE_BODY, TANGENTE_HEAD } from "./html";
-
-/* /tangente is a standalone piece: served as its own document (no site layout, no player),
-   with absolute Open Graph tags so LinkedIn and others show a proper preview card. */
+/* /tangente is a standalone piece, served as its own document (no site layout, no player).
+   The page itself lives in public/tangente/tangente.html — edit THAT file (HTML, CSS and JS together).
+   This handler only wraps it with <head> tags: charset, viewport, a <base> so relative paths resolve
+   inside /tangente/, and absolute Open Graph tags so LinkedIn shows a proper preview card. */
 const TITLE = "asua tangente";
 const DESC = "un archivo de ciclos creativos. no stas perdido, stas explorando.";
 
-export function GET(req: Request) {
+export async function GET(req: Request) {
   const origin = new URL(req.url).origin;
+  const res = await fetch(`${origin}/tangente/tangente.html`, { next: { revalidate: 300 } }).catch(() => null);
+  if (!res || !res.ok) return Response.redirect(`${origin}/tangente/tangente.html`, 307);
+  const page = await res.text();
+  const cut = page.indexOf("</style>") + "</style>".length;
   const url = `${origin}/tangente`;
   const img = `${origin}/tangente/og.jpg`;
   const meta = [
@@ -26,6 +30,6 @@ export function GET(req: Request) {
     `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:image" content="${img}">`,
   ].join("\n");
-  const html = `<!doctype html>\n<html lang="es">\n<head>\n${meta}\n${TANGENTE_HEAD}\n</head>\n<body>${TANGENTE_BODY}\n</body>\n</html>\n`;
+  const html = `<!doctype html>\n<html lang="es">\n<head>\n${meta}\n${page.slice(0, cut)}\n</head>\n<body>${page.slice(cut)}\n</body>\n</html>\n`;
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=0, s-maxage=300" } });
 }
