@@ -1,4 +1,4 @@
-<!-- asua · tangente. ESTE es el archivo que se edita: HTML + CSS + JS en uno. Se sirve en /tangente (ver app/tangente/route.ts). -->
+<!-- asua · tangente on Vercel (/tangente). GENERATED from docs/index.html: edit that file, then regenerate this one. -->
 <title>asua tangente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -318,6 +318,8 @@ html.inv { filter: invert(1); }
 @media (prefers-reduced-motion: reduce) { .door.out, .banner .photo.swap .cover { animation: none; } .pulse::before, .pulse::after, .ripple { animation: none; } }
 </style>
 
+
+<noscript><p style="font:11px Arial;padding:24px">asua tangente necesita javascript. los tracks: <a href="https://soundcloud.com/asua-colective">soundcloud.com/asua-colective</a></p></noscript>
 <!-- ================= door ================= -->
 <div class="door" id="door" hidden>
   <div class="tick" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -460,11 +462,13 @@ html.inv { filter: invert(1); }
   var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var REL = [
-    { code: 'ASUA0001', title: 'untitled-08', artist: 'joa', prod: 'zabtag', date: '26.11.2026', img: 'images/h0001.jpg', audio: '/audio/asua0001-01.mp3', url: 'https://soundcloud.com/asua-colective/asf-untitled-08joa-prod-zab' },
-    { code: 'ASUA0002', title: 'genes', artist: 'cup2k', prod: 'fé', date: '02.11.2026', img: 'images/h0002.jpg', audio: '/tangente/audio/asua0002-01.mp3', url: 'https://soundcloud.com/asua-colective/cup2k-genes-prod-fe-1faithh' },
-    { code: 'ASUA0003', title: 'esoteriiic contrabando', artist: 'zab', prod: 'zab', date: '02.11.2026', img: 'images/h0003.jpg', audio: '', url: 'https://on.soundcloud.com/3AQFucGRI1KCZw1v8U' }
+    { code: 'ASUA0001', title: 'untitled-08', artist: 'joa', prod: 'zabtag', date: '26.11.2026', img: 'images/h0001.jpg', audio: 'audio/asua0001-01.mp3', url: 'https://soundcloud.com/asua-colective/asf-untitled-08joa-prod-zab' },
+    { code: 'ASUA0002', title: 'genes', artist: 'cup2k', prod: 'fé', date: '02.11.2026', img: 'images/h0002.jpg', audio: 'audio/asua0002-01.mp3', url: 'https://soundcloud.com/asua-colective/cup2k-genes-prod-fe-1faithh' },
+    { code: 'ASUA0003', title: 'esoteriiic contrabando', artist: 'zab', prod: 'zab', date: '02.11.2026', img: 'images/h0003.jpg', audio: '', url: 'https://on.soundcloud.com/3AQFucGRI1KCZw1v8U' },
+    /* outside the three cycles: always open (asuaexclusiive) */
+    { code: 'ASUA0004', title: 'en frazadas', artist: 'gael22', prod: 'mirkokings, prodjka_', date: '04.11.2026', img: 'images/h0004.jpg', audio: 'audio/asua0004-01.mp3', url: 'https://soundcloud.com/asua-colective/gael22-en-frazadas-prod', bonus: true }
   ];
-  var CREW = [['joa', 'asua0001'], ['zabtag', 'prod.'], ['cup2k', 'asua0002'], ['fé', 'prod.'], ['zab', 'asua0003']];
+  var CREW = [['joa', 'asua0001'], ['zabtag', 'prod.'], ['cup2k', 'asua0002'], ['fé', 'prod.'], ['zab', 'asua0003'], ['gael22', 'asua0004'], ['mirkokings', 'prod.'], ['prodjka_', 'prod.']];
   /* chapter n opens with level n. chapter 1 marks the level-2 word; chapter 2 hides the red point that opens the file */
   var CH = [
     { t: 'redescubrimiento', marks: 'rebote', p: ['La intención detrás de todo esto es el redescubrimiento constante de uno mismo y aprender a ver hacia dentro con claridad para proyectar hacia afuera mejor arte y expresión.', 'Creemos que hacer esta práctica en comunidad es una forma muy práctica de llevar a cabo esta hazaña: observando e interiorizando arte que otros individuos compartieron, logrando ver nuevas perspectivas que sobresalen el molde de lo predecible y esperado, nutriendo nuestro sistema con expresión auténtica de otras personas, provocando que uno pueda concretar ciclos creativos cada vez más ricos y completos.'] },
@@ -513,6 +517,10 @@ html.inv { filter: invert(1); }
     var box = $('door').querySelector('.door-in').getBoundingClientRect();
     do { x = 40 + Math.random() * (W - 80); y = 50 + Math.random() * (H - 100); tries++; }
     while (tries < 30 && x > box.left - 40 && x < box.right + 40 && y > box.top - 40 && y < box.bottom + 40);
+    if (x > box.left - 40 && x < box.right + 40 && y > box.top - 40 && y < box.bottom + 40) {
+      var above = box.top - 50, below = H - box.bottom - 50;
+      y = above > below ? 40 + Math.random() * Math.max(10, above - 40) : box.bottom + 50 + Math.random() * Math.max(10, below - 40);
+    }
     sc.style.left = (x | 0) + 'px'; sc.style.top = (y | 0) + 'px';
     $('scope-ch').textContent = WORD[scopeI]; $('scope-idx').textContent = p2(scopeI + 1) + '/10';
     $('scope-xy').textContent = 'x' + p2(x / 10 | 0) + ' y' + p2(y / 10 | 0);
@@ -554,6 +562,7 @@ html.inv { filter: invert(1); }
   function render() {
     var nums = $('nums'); nums.textContent = '';
     REL.forEach(function (r, i) {
+      if (r.bonus) return;
       var b = document.createElement('button'); b.type = 'button'; b.textContent = i + 1;
       b.disabled = i >= level; b.className = cur === i ? 'cur' : '';
       b.setAttribute('aria-label', i < level ? 'ciclo ' + (i + 1) + ': ' + r.title : 'ciclo ' + (i + 1) + ' cerrado');
@@ -563,11 +572,11 @@ html.inv { filter: invert(1); }
     var rl = $('rel-list'); rl.textContent = '';
     REL.forEach(function (r, i) {
       var li = document.createElement('li'), no = '<span class="no">' + p2(i + 1) + '.</span>';
-      if (i < level) {
+      if (i < level || r.bonus) {
         li.className = cur === i ? 'active' : '';
         li.innerHTML = no + '<button class="name" type="button"></button><button class="a" type="button"></button><a class="a" target="_blank" rel="noopener">soundcloud</a>';
         var nm = li.querySelector('.name'), pl = li.querySelectorAll('.a')[0], sc = li.querySelectorAll('.a')[1];
-        nm.textContent = r.title; nm.title = r.artist + ' · prod. ' + r.prod; sc.href = r.url;
+        nm.textContent = r.title + (r.bonus ? ' · nuevo' : ''); nm.title = r.artist + ' · prod. ' + r.prod; sc.href = r.url;
         pl.textContent = r.audio ? (cur === i && !au.paused ? 'pausa' : 'escuchar') : 'sin audio';
         if (!r.audio) pl.classList.add('off');
         nm.addEventListener('click', function () { openRel(i); });
@@ -601,12 +610,30 @@ html.inv { filter: invert(1); }
 
   /* ================= level 3: typed with no field ================= */
   var buf = '';
+  function feed(k) {
+    buf = (buf + k).slice(-8); spawnTyped(k);
+    if (level === 2 && buf.slice(-5) === PW[2]) { buf = ''; kb.blur(); setLevel(3); inv(); render(); toast('ciclo 3 abierto · ' + REL[2].title); }
+  }
   document.addEventListener('keydown', function (e) {
     if (level < 1 || $('stage').hidden || e.metaKey || e.ctrlKey || e.altKey) return;
     var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
     if (!/^[a-zA-Z]$/.test(e.key)) return;
-    var k = e.key.toLowerCase(); buf = (buf + k).slice(-8); spawnTyped(k);
-    if (level === 2 && buf.slice(-5) === PW[2]) { buf = ''; setLevel(3); inv(); render(); toast('ciclo 3 abierto · ' + REL[2].title); }
+    feed(e.key.toLowerCase());
+  });
+  /* phones have no keyboard to "just type": touching the banner raises the on-screen one through an invisible field */
+  var kb = document.createElement('input');
+  kb.type = 'text'; kb.setAttribute('autocapitalize', 'off'); kb.setAttribute('autocomplete', 'off'); kb.setAttribute('autocorrect', 'off'); kb.setAttribute('spellcheck', 'false');
+  kb.setAttribute('aria-label', 'escribir'); kb.tabIndex = -1;
+  kb.style.cssText = 'position:fixed;left:50%;top:40%;width:1px;height:1px;opacity:0;border:0;padding:0;font-size:16px;pointer-events:none';
+  document.body.appendChild(kb);
+  kb.addEventListener('input', function () {
+    var v = norm(kb.value); kb.value = '';
+    for (var i = 0; i < v.length; i++) feed(v[i]);
+  });
+  var touchy = matchMedia('(hover: none), (pointer: coarse)').matches;
+  $('field').addEventListener('click', function (e) {
+    if (!touchy || level !== 2 || e.target.closest('button, a')) return;
+    kb.focus();
   });
   function spawnTyped(k) {
     var f = $('field'), s = document.createElement('span'); s.className = 'typed'; s.textContent = k;
@@ -639,6 +666,7 @@ html.inv { filter: invert(1); }
     if (level > 0) svg.appendChild(el('path', { 'class': 'arc', d: 'M' + (c.cx + rr * Math.cos(a1)) + ' ' + (c.cy + rr * Math.sin(a1)) + 'A' + rr + ' ' + rr + ' 0 ' + big + ' 1 ' + (c.cx + rr * Math.cos(a2)) + ' ' + (c.cy + rr * Math.sin(a2)) }));
     var box = $('nodes'); box.textContent = ''; nodes = [];
     REL.forEach(function (r, i) {
+      if (r.bonus) return;
       var b = document.createElement(i < level ? 'button' : 'span');
       b.className = 'node' + (i < level ? '' : ' shut') + (cur === i ? ' cur' : '');
       if (i < level) { b.type = 'button'; b.setAttribute('aria-label', 'ciclo ' + (i + 1) + ': ' + r.title); b.innerHTML = '<span class="num">' + p2(i + 1) + '</span><span class="lab"></span>'; b.querySelector('.lab').textContent = r.title; b.addEventListener('click', function () { openRel(i); }); }
@@ -754,7 +782,7 @@ html.inv { filter: invert(1); }
   /* transmission: words assemble one by one; one phrase is highlighted, like a voice on the line */
   var TX = {
     1: 'presta atención. el archivo no explica nada. el manifiesto sí. algunas letras pesan más que otras. júntalas.',
-    2: 'hay una frase en el capítulo dos que nunca se cierra. [donde termina, empieza el expediente.] lo que encuentres ahí no se escribe en ningún campo.',
+    2: 'hay una frase en el capítulo dos que nunca se cierra. [donde termina, empieza el expediente.] lo que encuentres ahí no se escribe en ningún campo. (en el celu: tocá el banner y escribí.)',
     3: 'ya está. el reloj sabe lo que viene. toca el pulso del centro cuando estés listo. [todos t aman aca.]'
   };
   var txTimer;
@@ -792,3 +820,4 @@ html.inv { filter: invert(1); }
   if (level === 0) openDoor(); else enterStage(false);
 })();
 </script>
+
